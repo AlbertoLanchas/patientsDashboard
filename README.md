@@ -5,16 +5,13 @@ It provides a clean interface to view, search, add, edit, and delete patient rec
 
 ---
 
-## ✨ Overview
-
-This project was created as a technical challenge to explore the **TanStack ecosystem**, with a focus on modular code structure, maintainability, and future extensibility.
-
----
-
 ## 📸 Demo
 
-![App Screenshot](./screenshots/demo.png)  
-> _You can include a GIF or video demo here._
+![_Patients Screenshot](https://i.postimg.cc/nzYCDrj5/image.png)  
+> _Patients View._
+
+![_Patient Detail Screenshot](https://i.postimg.cc/851rwLSD/image.png)  
+> _Patient Detail View with Notes._
 
 ---
 
@@ -137,6 +134,36 @@ This mix of tools provides full-stack coverage—unit, integration, and end-to-e
 
 ```bash
 https://github.com/AlbertoLanchas/patientsDashboard.git
-cd patients-app
+cd patientsDashboard
 npm install
 npm run dev
+
+```
+
+---
+
+## 🚧 Under Construction (extra-features branch)
+
+The challenge proposed for this branch aims to address the following ideas that have been considered as improvements for the application:
+
+![_Patient Detail Screenshot](https://i.postimg.cc/GpRBhv9Y/image.png)  
+> _Dashboard Home View._
+
+![_Patient Detail Screenshot](https://i.postimg.cc/N0xKyLrn/image.png)  
+> _New Patients View._
+
+![_Patient Detail Screenshot](https://i.postimg.cc/0Q2b7xYy/image.png)  
+> _New Patient Detail View._
+
+![_Patient Detail Screenshot](https://i.postimg.cc/8kYjf2jT/image.png)  
+> _More Patient Detail View._
+
+![_Appointments Screenshot](https://i.postimg.cc/rwXsQ51b/image.png)  
+> New Appointments View._
+
+![_Appointments Team View Screenshot](https://i.postimg.cc/fb5bzFGn/image.png)  
+> New Appointments Team View._
+
+![Chat Screenshot](https://i.postimg.cc/LXb6fP4x/image.png)  
+> New Chat Team View._
+
