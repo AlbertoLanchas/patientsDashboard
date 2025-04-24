@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary colors */
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #93c5fd;
+
+  /* Status colors */
+  --attended: #22c55e;
+  --in-progress: #3b82f6;
+  --pending: #f97316;
+  --canceled: #ef4444;
+
+  /* Neutral colors */
+  --sidebar-bg: #1e293b;
+  --card-bg: #ffffff;
+  --bg-gray: #f1f5f9;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-sans);
+  @apply bg-slate-100 dark:bg-slate-900 transition-colors duration-200;
+}
+
+#root {
+  height: 100%;
+}
+
+.layout-sidebar {
+  @apply bg-slate-800 text-white h-screen fixed left-0 top-0 z-10 flex flex-col transition-all duration-300 ease-in-out;
+  width: 240px;
+}
+
+.layout-main {
+  @apply transition-all duration-300 ease-in-out;
+  margin-left: 240px;
+}
+
+.layout-topbar {
+  @apply bg-white shadow-sm py-3 px-5 dark:bg-slate-800 dark:border-b dark:border-slate-700 transition-colors duration-200;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md mb-5 p-6 dark:bg-slate-800 dark:border dark:border-slate-700 transition-colors duration-200;
+}
+
+.status-indicator {
+  @apply flex-shrink-0 rounded-full w-3 h-3;
+}
+
+.status-indicator.attended {
+  @apply bg-green-500 dark:bg-green-400;
+}
+
+.status-indicator.in-progress {
+  @apply bg-blue-500 dark:bg-blue-400;
+}
+
+.status-indicator.pending {
+  @apply bg-orange-500 dark:bg-orange-400;
+}
+
+.status-indicator.canceled {
+  @apply bg-red-500 dark:bg-red-400;
+}
+
+.statistic-card {
+  @apply card flex flex-col h-36 transition-all duration-200 cursor-pointer hover:shadow-lg dark:hover:shadow-slate-700/50;
+}
+
+.tag {
+  @apply px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.tag-diabetes {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200;
+}
+
+.tag-hypertension {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200;
+}
+
+.tag-asthma {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200;
+}
+
+.action-button {
+  @apply flex items-center justify-center rounded-full w-10 h-10 transition-colors duration-200;
+}
+
+.action-button-primary {
+  @apply bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700;
+}
+
+.action-button-secondary {
+  @apply bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600;
+}
+
+.appointments-timeline {
+  @apply relative border-l border-gray-200 pl-8 ml-6 dark:border-slate-700;
+}
+
+.ongoing-appointment {
+  @apply card border-l-4 border-blue-500 dark:border-blue-400;
+}
+
+.appointment-time-slot {
+  @apply flex items-start gap-4 mb-6 relative;
+}
+
+.appointment-time {
+  @apply absolute -left-16 text-sm text-gray-500 font-medium dark:text-gray-400;
+}
+
+.appointment-indicator {
+  @apply absolute -left-[26px] w-5 h-5 rounded-full z-10 flex items-center justify-center;
+}
+
+.appointment-card {
+  @apply bg-white rounded-lg shadow-sm p-4 border-l-4 flex-1 transition-all duration-200 hover:shadow-md 
+    dark:bg-slate-800 dark:border-slate-700 dark:hover:shadow-slate-700/50;
+}
+
+.charts-container canvas {
+  max-height: 50px !important;
+}
+
+/* Form elements */
+input[type="search"],
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  @apply bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+    dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:placeholder-gray-400;
+}
+
+/* Buttons */
+.btn {
+  @apply px-4 py-2 rounded-lg transition-colors duration-200 font-medium;
+}
+
+.btn-primary {
+  @apply bg-blue-500 text-white hover:bg-blue-600 
+    dark:bg-blue-600 dark:hover:bg-blue-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200 
+    dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600;
+}
+
+/* Links */
+.link {
+  @apply text-blue-500 hover:text-blue-600 transition-colors duration-200
+    dark:text-blue-400 dark:hover:text-blue-300;
+}
+
+/* Headings */
+.heading-1 {
+  @apply text-2xl font-bold text-gray-900 dark:text-white;
+}
+
+.heading-2 {
+  @apply text-xl font-semibold text-gray-900 dark:text-white;
+}
+
+.heading-3 {
+  @apply text-lg font-semibold text-gray-900 dark:text-white;
+}
+
+/* Text colors */
+.text-muted {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+.text-primary {
+  @apply text-gray-900 dark:text-white;
+}
+
+/* Dividers */
+.divider {
+  @apply border-t border-gray-200 dark:border-slate-700;
+}
+
+/* Shadows */
+.shadow-card {
+  @apply shadow-md dark:shadow-slate-700/50;
+}
