@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { Note } from "../../../interfaces";
+import { Note } from "../interface/KPIModal";
 
 interface NoteFormModalProps {
     isOpen: boolean;

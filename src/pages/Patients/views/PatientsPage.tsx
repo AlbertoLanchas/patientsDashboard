@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Filter, Loader2 } from "lucide-react";
 
-import { AddPatientButton, PatientFormModal, PatientsContainer, PatientsTable, SearchBar } from "../components";
+import { AddPatientButton, PatientFormModal, PatientsContainer, PatientsTable, SearchBar, FilterPatients } from "../components";
 
 import ConfirmationModal from "../../../components/ConfirmationModal";
-import { Patient } from "../../../interfaces";
+import { Gender, Patient } from "../../../interfaces";
 import { usePatientsMutations } from "../hooks/usePatientsMutations";
 import { usePatientsHandlers } from "../hooks/usePatientsHandlers";
 import { searchPatients } from "../utils/searchPatients";
@@ -18,7 +18,18 @@ export function PatientsPage() {
   const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
   const [optimisticPatientId, setOptimisticPatientId] = useState<string | null>(null);
 
-  const { patientsQuery } = usePatients();
+  const [gender, setGender] = useState<Gender>(Gender.All);
+  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [minAge, setMinAge] = useState<number | null>(null);
+  const [maxAge, setMaxAge] = useState<number | null>(null);
+
+  const { patientsQuery, page, nextPage, prevPage } = usePatients({
+    gender,
+    selectedConditions,
+    minAge,
+    maxAge,
+  });
+
   const { addPatientMutation, editPatientMutation, deleteMutation } = usePatientsMutations(setOptimisticPatientId);
 
   const { handleSubmit, handleOpenAddModal, handleEditPatient, errors, register } = usePatientsHandlers({
@@ -36,7 +47,9 @@ export function PatientsPage() {
     setPatientToDelete(null);
   };
 
-  const filteredPatients = searchPatients(patientsQuery?.data || [], searchTerm);
+  const patients = patientsQuery?.data?.data || []
+  const filteredPatients = searchPatients(patients, searchTerm);
+  const primaryConditions = [...new Set(patients.map(patient => patient.primaryCondition).flat())];
 
   if (patientsQuery.isLoading) {
     return (
@@ -62,6 +75,18 @@ export function PatientsPage() {
       <AddPatientButton onAdd={handleOpenAddModal} />
       <div className="bg-white rounded-lg p-4 mb-6">
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <FilterPatients
+          gender={gender}
+          setGender={setGender}
+          primaryConditions={primaryConditions}
+          selectedConditions={selectedConditions}
+          setSelectedConditions={setSelectedConditions}
+          minAge={minAge}
+          setMinAge={setMinAge}
+          maxAge={maxAge}
+          setMaxAge={setMaxAge}
+        />
+
         <PatientsTable
           patients={filteredPatients}
           onEdit={handleEditPatient}
@@ -70,6 +95,11 @@ export function PatientsPage() {
             setPatientToDelete(patient);
             setShowDeleteModal(true);
           }}
+          onGenderChange={setGender}
+          gender={gender}
+          page={page}
+          nextPage={nextPage}
+          prevPage={prevPage}
         />
       </div>
       <PatientFormModal

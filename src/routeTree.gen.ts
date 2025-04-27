@@ -10,85 +10,153 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./routes/__root";
-import { Route as PatientsIndexImport } from "./routes/patients/index";
-import { Route as PatientsIdImport } from "./routes/patients/$id";
+import { Route as rootRoute } from './routes/__root'
+import { Route as PatientsIndexImport } from './routes/patients/index'
+import { Route as MessagesIndexImport } from './routes/messages/index'
+import { Route as HomeIndexImport } from './routes/home/index'
+import { Route as AppointmentsIndexImport } from './routes/appointments/index'
+import { Route as PatientsIdImport } from './routes/patients/$id'
 
 // Create/Update Routes
 
 const PatientsIndexRoute = PatientsIndexImport.update({
-  id: "/patients/",
-  path: "/patients/",
+  id: '/patients/',
+  path: '/patients/',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
+
+const MessagesIndexRoute = MessagesIndexImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HomeIndexRoute = HomeIndexImport.update({
+  id: '/home/',
+  path: '/home/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppointmentsIndexRoute = AppointmentsIndexImport.update({
+  id: '/appointments/',
+  path: '/appointments/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const PatientsIdRoute = PatientsIdImport.update({
-  id: "/patients/$id",
-  path: "/patients/$id",
+  id: '/patients/$id',
+  path: '/patients/$id',
   getParentRoute: () => rootRoute,
-} as any);
+} as any)
 
 // Populate the FileRoutesByPath interface
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/patients/$id": {
-      id: "/patients/$id";
-      path: "/patients/$id";
-      fullPath: "/patients/$id";
-      preLoaderRoute: typeof PatientsIdImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/patients/": {
-      id: "/patients/";
-      path: "/patients";
-      fullPath: "/patients";
-      preLoaderRoute: typeof PatientsIndexImport;
-      parentRoute: typeof rootRoute;
-    };
+    '/patients/$id': {
+      id: '/patients/$id'
+      path: '/patients/$id'
+      fullPath: '/patients/$id'
+      preLoaderRoute: typeof PatientsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/appointments/': {
+      id: '/appointments/'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AppointmentsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/home/': {
+      id: '/home/'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/patients/': {
+      id: '/patients/'
+      path: '/patients'
+      fullPath: '/patients'
+      preLoaderRoute: typeof PatientsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  "/patients/$id": typeof PatientsIdRoute;
-  "/patients": typeof PatientsIndexRoute;
+  '/patients/$id': typeof PatientsIdRoute
+  '/appointments': typeof AppointmentsIndexRoute
+  '/home': typeof HomeIndexRoute
+  '/messages': typeof MessagesIndexRoute
+  '/patients': typeof PatientsIndexRoute
 }
 
 export interface FileRoutesByTo {
-  "/patients/$id": typeof PatientsIdRoute;
-  "/patients": typeof PatientsIndexRoute;
+  '/patients/$id': typeof PatientsIdRoute
+  '/appointments': typeof AppointmentsIndexRoute
+  '/home': typeof HomeIndexRoute
+  '/messages': typeof MessagesIndexRoute
+  '/patients': typeof PatientsIndexRoute
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  "/patients/$id": typeof PatientsIdRoute;
-  "/patients/": typeof PatientsIndexRoute;
+  __root__: typeof rootRoute
+  '/patients/$id': typeof PatientsIdRoute
+  '/appointments/': typeof AppointmentsIndexRoute
+  '/home/': typeof HomeIndexRoute
+  '/messages/': typeof MessagesIndexRoute
+  '/patients/': typeof PatientsIndexRoute
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/patients/$id" | "/patients";
-  fileRoutesByTo: FileRoutesByTo;
-  to: "/patients/$id" | "/patients";
-  id: "__root__" | "/patients/$id" | "/patients/";
-  fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/patients/$id'
+    | '/appointments'
+    | '/home'
+    | '/messages'
+    | '/patients'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/patients/$id' | '/appointments' | '/home' | '/messages' | '/patients'
+  id:
+    | '__root__'
+    | '/patients/$id'
+    | '/appointments/'
+    | '/home/'
+    | '/messages/'
+    | '/patients/'
+  fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  PatientsIdRoute: typeof PatientsIdRoute;
-  PatientsIndexRoute: typeof PatientsIndexRoute;
+  PatientsIdRoute: typeof PatientsIdRoute
+  AppointmentsIndexRoute: typeof AppointmentsIndexRoute
+  HomeIndexRoute: typeof HomeIndexRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
+  PatientsIndexRoute: typeof PatientsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   PatientsIdRoute: PatientsIdRoute,
+  AppointmentsIndexRoute: AppointmentsIndexRoute,
+  HomeIndexRoute: HomeIndexRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
   PatientsIndexRoute: PatientsIndexRoute,
-};
+}
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {
@@ -97,11 +165,23 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/patients/$id",
+        "/appointments/",
+        "/home/",
+        "/messages/",
         "/patients/"
       ]
     },
     "/patients/$id": {
       "filePath": "patients/$id.tsx"
+    },
+    "/appointments/": {
+      "filePath": "appointments/index.tsx"
+    },
+    "/home/": {
+      "filePath": "home/index.tsx"
+    },
+    "/messages/": {
+      "filePath": "messages/index.tsx"
     },
     "/patients/": {
       "filePath": "patients/index.tsx"

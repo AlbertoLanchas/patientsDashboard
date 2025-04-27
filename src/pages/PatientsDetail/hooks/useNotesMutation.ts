@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Note } from "../../../interfaces";
+import { Note } from "../interface/KPIModal";
 import { addNote, updateNote, deleteNote } from "../services/notes";
 
 export const useNotesMutations = (

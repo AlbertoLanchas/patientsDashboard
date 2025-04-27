@@ -3,3 +3,4 @@ export { default as NoteForm } from "./NoteForm";
 export { default as NotesSection } from "./NotesSection";
 export { default as PatientDetailView } from "./PatientDetailView";
 export { default as PatientInfoCard } from "./PatientInfoCard";
+export { default as PatientKPIs } from "./PatientsKPI"

@@ -1,4 +1,4 @@
-import { Note } from "../../../interfaces";
+import { Note } from "../interface/KPIModal";
 import { v4 as uuid } from "uuid";
 import { useForm, SubmitHandler } from "react-hook-form";
 

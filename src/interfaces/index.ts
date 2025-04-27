@@ -3,11 +3,16 @@ export interface Patient {
   name: string;
   age: number;
   primaryCondition: string;
+  imgUrl: string;
+  gender: Gender;
 }
 
-export interface Note {
-  id: string;
-  patientId: string;
-  content: string;
-  title: string;
+export enum Gender {
+  All = 'All',
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other'
 }
+
+export type Theme = 'light' | 'dark';
+export type Language = 'en' | 'es';

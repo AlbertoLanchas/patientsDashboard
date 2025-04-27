@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
-import { Note } from "../../../interfaces";
+import { Note } from "../interface/KPIModal";
 
 interface Props {
     note: Note;
@@ -15,8 +15,8 @@ const NoteDetail = ({ note, onEdit, onDelete, optimisticId }: Props) => {
     return (
         <div
             className={`bg-white dark:bg-gray-800 shadow-md rounded-2xl p-4 border transition-all duration-300 ${isOptimistic
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
-                    : 'border-gray-200 dark:border-gray-700'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
+                : 'border-gray-200 dark:border-gray-700'
                 }`}
         >
             <div className="flex justify-between items-start mb-2">

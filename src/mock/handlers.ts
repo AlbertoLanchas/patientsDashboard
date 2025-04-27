@@ -1,13 +1,53 @@
 import { http, HttpResponse, delay } from "msw";
 import { db } from "./data";
 import { v4 as uuid } from "uuid";
-import { Patient, Note } from "../interfaces";
+import { Patient, Gender } from "../interfaces";
+import { Note } from "../pages/PatientsDetail/interface/KPIModal";
 
 export const handlers = [
   // GET /patients
-  http.get("/api/patients", async () => {
+  http.get('/api/patients', async ({ request }) => {
     await delay(500);
-    return HttpResponse.json(db.patients as Patient[]);
+
+    const url = new URL(request.url);
+    const page = parseInt(url.searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
+
+    const genderParam = url.searchParams.get('gender');
+    const primaryConditionsParam = url.searchParams.getAll('primaryCondition');
+    const minAgeParam = url.searchParams.get('minAge');
+    const maxAgeParam = url.searchParams.get('maxAge');
+
+    let filtered = db.patients as Patient[];
+
+    if (genderParam && genderParam !== Gender.All) {
+      filtered = filtered.filter(p => p.gender === genderParam);
+    }
+
+    if (primaryConditionsParam.length > 0) {
+      filtered = filtered.filter(p =>
+        p.primaryCondition && primaryConditionsParam.includes(p.primaryCondition)
+      );
+    }
+
+    if (minAgeParam) {
+      filtered = filtered.filter(p => p.age >= parseInt(minAgeParam, 10));
+    }
+    if (maxAgeParam) {
+      filtered = filtered.filter(p => p.age <= parseInt(maxAgeParam, 10));
+    }
+
+    const totalPatients = filtered.length;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = page * pageSize;
+    const paginatedPatients = filtered.slice(startIndex, endIndex);
+
+    return HttpResponse.json({
+      data: paginatedPatients,
+      total: totalPatients,
+      page,
+      pageSize,
+    }, { status: 200 });
   }),
 
   // GET /patients/:patientId
@@ -47,9 +87,19 @@ export const handlers = [
   }),
 
   // GET /patients/:patientId/notes
-  http.get("/api/patients/:patientId/notes", async ({ params }) => {
+  http.get("/api/patients/:patientId/notes", async ({ request, params }) => {
     await delay(500);
+
+    const url = new URL(request.url);
+    const typeParam = url.searchParams.get('type');
+    let filtered = db.notes as Note[];
+
+    if (typeParam) {
+      filtered = filtered.filter(n => n.type === typeParam);
+    }
+
     const notes = db.notes.filter((n) => n.patientId === params.patientId);
+
     return HttpResponse.json(notes as Note[]);
   }),
 
