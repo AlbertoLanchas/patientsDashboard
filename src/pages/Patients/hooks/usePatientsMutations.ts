@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Patient } from "../../../interfaces";
-import { addPatient, updatePatient, deletePatient } from "../services/patients";
+import { Patient } from "../../../models";
+import { addPatient, deletePatient, updatePatient } from "../services/patients";
 
 export function usePatientsMutations(
   setOptimisticPatientId: (id: string | null) => void,

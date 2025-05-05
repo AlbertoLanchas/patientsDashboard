@@ -1,5 +1,5 @@
+import { Patient } from "../../../models";
 import { sleep } from "../../../utils/sleep";
-import { Patient } from "../../../interfaces";
 
 export const getPatient = async (id: string): Promise<Patient> => {
   await sleep(2);

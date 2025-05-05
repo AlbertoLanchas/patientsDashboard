@@ -1,47 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
+
+import { Patient } from "#models/index.ts";
 import { getPatients } from "../services/patients";
-import { Gender } from "../../../interfaces";
-import { useEffect, useState } from "react";
+import { filterPatients } from "../utils/filterPatients";
+import { buildFilterConfig } from "../utils/usePatientFilter";
 
-export const usePatients = ({
-  gender,
-  selectedConditions,
-  minAge,
-  maxAge,
-}: {
-  gender: Gender;
-  selectedConditions: string[];
-  minAge: number | null;
-  maxAge: number | null;
-}) => {
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
+interface FilterValues {
+  name?: string;
+  primaryCondition?: string;
+  minAge?: number;
+  gender?: "" | Patient["gender"];
+}
 
-  const patientsQuery = useQuery({
-    queryKey: ["patients", { gender, selectedConditions, minAge, maxAge, page, pageSize }],
-    queryFn: () =>
-      getPatients({ gender, selectedConditions, minAge, maxAge, page, pageSize }),
+export const usePatients = (filters: FilterValues) => {
+  return useQuery({
+    queryKey: ["patients", filters],
+    queryFn: getPatients,
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
     retry: 4,
     retryDelay: (attempt) => attempt * 5000,
+    select: (data) => {
+      const filterConfig = buildFilterConfig(filters);
+      return filterPatients(data, filterConfig);
+    },
   });
-
-  useEffect(() => {
-    setPage(1)
-  }, [gender, selectedConditions, minAge, maxAge])
-
-  const nextPage = () => {
-    if (patientsQuery.data?.data.length === 0) return;
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const prevPage = () => {
-    if (page === 1) return;
-    setPage((prevPage) => prevPage - 1);
-  };
-
-  return { patientsQuery, page, nextPage, prevPage };
 };

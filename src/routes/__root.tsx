@@ -1,11 +1,6 @@
-import { createRootRoute, Navigate, Outlet } from "@tanstack/react-router";
-import MainLayout from "../pages/Layout/components/MainLayout";
+import { Navigate, Outlet, createRootRoute } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
-  component: () => (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  ),
-  notFoundComponent: () => <Navigate to="/home" />,
+  component: () => <Outlet />,
+  notFoundComponent: () => <Navigate to="/patients" />,
 });

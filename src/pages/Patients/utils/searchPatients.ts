@@ -1,4 +1,4 @@
-import { Patient } from "../../../interfaces";
+import { Patient } from "#models/index.ts";
 
 export const searchPatients = (
   patients: Patient[] | undefined,

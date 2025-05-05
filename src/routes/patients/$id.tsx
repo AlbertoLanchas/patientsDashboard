@@ -6,5 +6,5 @@ export const Route = createFileRoute("/patients/$id")({
 });
 
 function PatientDetail() {
-  return <PatientDetailPage />
+  return <PatientDetailPage />;
 }

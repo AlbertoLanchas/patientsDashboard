@@ -1,6 +1,4 @@
-import { Patient, Gender } from "../interfaces";
-
-import { Note } from "../pages/PatientsDetail/interface/KPIModal";
+import { Gender, Note, Patient } from "../models";
 
 export const db: {
   patients: Patient[];
@@ -8,158 +6,76 @@ export const db: {
 } = {
   patients: [
     {
-      id: "1",
-      age: 52,
-      primaryCondition: "Diabetes",
+      id: crypto.randomUUID(),
       name: "Carlos Gomez",
-      imgUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Male,
+      age: 52,
+      primaryCondition: "Diabetes",
+      gender: Gender.Male
     },
     {
-      id: "2",
+      id: crypto.randomUUID(),
+      name: "Maria Rodriguez",
       age: 63,
       primaryCondition: "Hypertension",
-      name: 'Michael Brown',
-      imgUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Male,
+      gender: Gender.Female
     },
     {
-      id: "3",
-      age: 45,
-      primaryCondition: "Asthma",
+      id: crypto.randomUUID(),
       name: "Ana Perez",
-      imgUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
-    },
-    {
-      id: "4",
-      age: 30,
-      primaryCondition: "Migraine",
-      name: 'Emily Johnson',
-      imgUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
-    },
-    {
-      id: "5",
-      age: 70,
-      primaryCondition: "Arthritis",
-      name: 'Sarah Johnson',
-      imgUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
-    },
-    {
-      id: "6",
-      age: 52,
-      primaryCondition: "Diabetes",
-      name: 'Sarah Lee',
-      imgUrl: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
-    },
-    {
-      id: "7",
-      age: 63,
-      primaryCondition: "Hypertension",
-      name: 'David Kim',
-      imgUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Male,
-    },
-    {
-      id: "8",
       age: 45,
       primaryCondition: "Asthma",
-      name: 'Natalie Brown',
-      imgUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
+      gender: Gender.Other
     },
     {
-      id: "9",
+      id: crypto.randomUUID(),
+      name: "John Doe",
       age: 30,
       primaryCondition: "Migraine",
-      name: 'James Wilson',
-      imgUrl: 'https://images.unsplash.com/photo-1542345812-d98b5cd6cf98?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Male,
+      gender: Gender.Male
     },
     {
-      id: "10",
+      id: crypto.randomUUID(),
+      name: "Emily Smith",
       age: 70,
       primaryCondition: "Arthritis",
-      name: 'Linda Gonzalez',
-      imgUrl: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
-    },
-    {
-      id: "11",
-      age: 52,
-      primaryCondition: "Diabetes",
-      name: 'Robert Taylor',
-      imgUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Male,
-    },
-    {
-      id: "12",
-      age: 63,
-      primaryCondition: "Hypertension",
-      name: 'Jessica Nguyen',
-      imgUrl: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&q=80&w=100&h=100',
-      gender: Gender.Female,
+      gender: Gender.Female
     },
   ],
   notes: [
     {
-      id: "n1",
-      patientId: "1",
+      id: crypto.randomUUID(),
+      patientId: "",
       title: "Initial Check-up",
       content: "Patient is stable",
-      createdAt: '2024-03-15T10:30:00Z',
-      createdBy: {
-        name: 'Dr. Joseph Carlo',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      type: 'general'
     },
     {
-      id: "n2",
-      patientId: "1",
+      id: crypto.randomUUID(),
+      patientId: "",
       title: "Follow-up",
       content: "Blood pressure is high",
-      createdAt: '2024-03-18T14:15:00Z',
-      createdBy: {
-        name: 'Dr. Joseph Carlo',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      type: 'health'
     },
     {
-      id: "n3",
-      patientId: "3",
+      id: crypto.randomUUID(),
+      patientId: "",
       title: "Asthma Management",
       content: "Patient reports occasional shortness of breath",
-      createdAt: '2024-03-18T09:45:00Z',
-      createdBy: {
-        name: 'Dr. Joseph Carlo',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      type: 'general'
     },
     {
-      id: "n4",
-      patientId: "3",
+      id: crypto.randomUUID(),
+      patientId: "",
       title: "Migraine Report",
       content: "Patient is experiencing frequent headaches",
-      createdAt: '2024-03-20T11:20:00Z',
-      createdBy: {
-        name: 'Dr. Joseph Carlo',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-      },
-      type: 'health',
-      isEdited: true,
-      editedAt: '2024-03-20T11:25:00Z',
-      versions: [
-        {
-          content: 'Reviewed blood sugar logs.',
-          editedAt: '2024-03-20T11:20:00Z'
-        }
-      ]
+    },
+    {
+      id: crypto.randomUUID(),
+      patientId: "",
+      title: "Arthritis Pain Management",
+      content: "Patient needs increased pain relief medication",
     },
   ],
 };
+
+db.notes = db.notes.map((note, index) => {
+  const patientId = db.patients[index].id;
+  return { ...note, patientId: patientId };
+});

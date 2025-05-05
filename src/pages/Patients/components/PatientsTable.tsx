@@ -1,4 +1,5 @@
-import { Gender, Patient } from "../../../interfaces";
+import { useState } from "react";
+import { Patient } from "../../../models";
 import PatientRow from "./PatientRow";
 
 type PatientsTableProps = {
@@ -6,11 +7,6 @@ type PatientsTableProps = {
   onEdit: (p: Patient) => void;
   onDelete: (p: Patient) => void;
   optimisticId?: string | null;
-  gender: string;
-  onGenderChange?: (gender: Gender) => void;
-  page: number;
-  nextPage: () => void;
-  prevPage: () => void;
 };
 
 const PatientsTable = ({
@@ -18,72 +14,82 @@ const PatientsTable = ({
   onEdit,
   onDelete,
   optimisticId,
-  page,
-  nextPage,
-  prevPage
 }: PatientsTableProps) => {
-  const ITEMS_PER_PAGE = 10;
-  const totalPatients = patients.length;
+  const [sortColumn, setSortColumn] = useState<keyof Patient>("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (column: keyof Patient) => {
+    if (column === sortColumn) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedPatients = [...patients].sort((a, b) => {
+    const aValue = a[sortColumn];
+    const bValue = b[sortColumn];
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else if (typeof aValue === "number" && typeof bValue === "number") {
+      return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
+    }
+    return 0;
+  });
 
   return (
-    <div>
-
-      <table className="w-full table-auto border-collapse text-sm">
-        <thead>
-          <tr className="bg-gray-100 dark:bg-slate-700">
-            <th className="p-2 text-left">Name</th>
-            <th className="p-2 text-left">Age</th>
-            <th className="p-2 text-left">Primary Condition</th>
-            <th className="p-2 text-left">Actions</th>
+    <table className="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr className="bg-gray-100 dark:bg-slate-700">
+          <th
+            className="p-2 text-left cursor-pointer"
+            onClick={() => handleSort("name")}
+          >
+            Name {sortColumn === "name" && (sortDirection === "asc" ? "↑" : "↓")}
+          </th>
+          <th
+            className="p-2 text-left cursor-pointer"
+            onClick={() => handleSort("age")}
+          >
+            Age {sortColumn === "age" && (sortDirection === "asc" ? "↑" : "↓")}
+          </th>
+          <th
+            className="p-2 text-left cursor-pointer"
+            onClick={() => handleSort("primaryCondition")}
+          >
+            Primary Condition{" "}
+            {sortColumn === "primaryCondition" &&
+              (sortDirection === "asc" ? "↑" : "↓")}
+          </th>
+          <th className="p-2 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {sortedPatients.map((patient) => (
+          <PatientRow
+            key={patient.id}
+            patient={patient}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            isOptimistic={patient.id === optimisticId}
+          />
+        ))}
+        {sortedPatients.length === 0 && (
+          <tr>
+            <td
+              colSpan={4}
+              className="text-center text-gray-500 dark:text-gray-400 py-4"
+            >
+              No patients found.
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {patients.map((patient) => (
-            <PatientRow
-              key={patient.id}
-              patient={patient}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              isOptimistic={patient.id === optimisticId}
-            />
-          ))}
-          {patients.length === 0 && (
-            <tr>
-              <td
-                colSpan={4}
-                className="text-center text-gray-500 dark:text-gray-400 py-4"
-              >
-                No patients found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-2">
-
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={prevPage}
-            disabled={page === 1}
-            className="px-3 py-1 rounded border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700"
-          >
-            Previous
-          </button>
-
-          <button
-            onClick={nextPage}
-            disabled={totalPatients < ITEMS_PER_PAGE}
-            className="px-3 py-1 rounded border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-slate-700"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-    </div>
-
-
+        )}
+      </tbody>
+    </table>
   );
 };
 

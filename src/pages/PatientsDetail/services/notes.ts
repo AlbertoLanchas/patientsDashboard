@@ -1,18 +1,13 @@
-import { Note, NoteType } from "../interface/KPIModal";
+import { Note } from "../../../models";
 import { sleep } from "../../../utils/sleep";
 
-export const getNotes = async (id: string, type?: NoteType): Promise<Note[]> => {
+export const getNotes = async (id: string): Promise<Note[]> => {
   await sleep(2);
+  const response = await fetch(`/api/patients/${id}/notes`);
 
-  const url = new URL(`/api/patients/${id}/notes`, window.location.origin);
-
-  if (type) {
-    url.searchParams.set('type', type);
-  }
-
-  const response = await fetch(url.toString());
   return response.json();
 };
+
 export const addNote = async (id: string, note: Note): Promise<Note> => {
   await sleep(2);
   const response = await fetch(`/api/patients/${id}/notes/${note.id}`, {

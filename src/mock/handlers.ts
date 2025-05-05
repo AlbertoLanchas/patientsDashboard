@@ -1,53 +1,12 @@
-import { http, HttpResponse, delay } from "msw";
+import { delay, http, HttpResponse } from "msw";
+import { Note, Patient } from "../models";
 import { db } from "./data";
-import { v4 as uuid } from "uuid";
-import { Patient, Gender } from "../interfaces";
-import { Note } from "../pages/PatientsDetail/interface/KPIModal";
 
 export const handlers = [
   // GET /patients
-  http.get('/api/patients', async ({ request }) => {
+  http.get("/api/patients", async () => {
     await delay(500);
-
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const pageSize = parseInt(url.searchParams.get('pageSize') || '10', 10);
-
-    const genderParam = url.searchParams.get('gender');
-    const primaryConditionsParam = url.searchParams.getAll('primaryCondition');
-    const minAgeParam = url.searchParams.get('minAge');
-    const maxAgeParam = url.searchParams.get('maxAge');
-
-    let filtered = db.patients as Patient[];
-
-    if (genderParam && genderParam !== Gender.All) {
-      filtered = filtered.filter(p => p.gender === genderParam);
-    }
-
-    if (primaryConditionsParam.length > 0) {
-      filtered = filtered.filter(p =>
-        p.primaryCondition && primaryConditionsParam.includes(p.primaryCondition)
-      );
-    }
-
-    if (minAgeParam) {
-      filtered = filtered.filter(p => p.age >= parseInt(minAgeParam, 10));
-    }
-    if (maxAgeParam) {
-      filtered = filtered.filter(p => p.age <= parseInt(maxAgeParam, 10));
-    }
-
-    const totalPatients = filtered.length;
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = page * pageSize;
-    const paginatedPatients = filtered.slice(startIndex, endIndex);
-
-    return HttpResponse.json({
-      data: paginatedPatients,
-      total: totalPatients,
-      page,
-      pageSize,
-    }, { status: 200 });
+    return HttpResponse.json(db.patients as Patient[]);
   }),
 
   // GET /patients/:patientId
@@ -62,7 +21,7 @@ export const handlers = [
   // POST /patients
   http.post("/api/patients", async ({ request }) => {
     const data = (await request.json()) as Omit<Patient, "id">;
-    const newPatient: Patient = { id: uuid(), ...data };
+    const newPatient: Patient = { id: crypto.randomUUID(), ...data };
     db.patients.push(newPatient);
     return new HttpResponse(JSON.stringify(newPatient), {
       status: 201,
@@ -87,19 +46,9 @@ export const handlers = [
   }),
 
   // GET /patients/:patientId/notes
-  http.get("/api/patients/:patientId/notes", async ({ request, params }) => {
+  http.get("/api/patients/:patientId/notes", async ({ params }) => {
     await delay(500);
-
-    const url = new URL(request.url);
-    const typeParam = url.searchParams.get('type');
-    let filtered = db.notes as Note[];
-
-    if (typeParam) {
-      filtered = filtered.filter(n => n.type === typeParam);
-    }
-
     const notes = db.notes.filter((n) => n.patientId === params.patientId);
-
     return HttpResponse.json(notes as Note[]);
   }),
 
@@ -109,7 +58,7 @@ export const handlers = [
     async ({ params, request }) => {
       const body = (await request.json()) as Omit<Note, "id" | "patientId">;
       const note: Note = {
-        id: uuid(),
+        id: crypto.randomUUID(),
         patientId: params.patientId as string,
         ...body,
       };

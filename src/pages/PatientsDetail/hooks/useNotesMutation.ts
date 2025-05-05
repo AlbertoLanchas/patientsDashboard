@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { Note } from "../interface/KPIModal";
-import { addNote, updateNote, deleteNote } from "../services/notes";
+import { Note } from "../../../models";
+import { addNote, deleteNote, updateNote } from "../services/notes";
 
 export const useNotesMutations = (
   setOptimisticNoteId: (id: string | null) => void,

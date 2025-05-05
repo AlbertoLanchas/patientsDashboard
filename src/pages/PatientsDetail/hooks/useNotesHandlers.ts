@@ -1,6 +1,5 @@
-import { Note } from "../interface/KPIModal";
-import { v4 as uuid } from "uuid";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Note } from "../../../models";
 
 interface UseNotesHandlersProps {
   setShowAddModal: (open: boolean) => void;
@@ -44,7 +43,7 @@ export function useNotesHandlers({
     } else {
       addNote({
         ...data,
-        id: uuid(),
+        id: crypto.randomUUID(),
       });
     }
     setShowAddModal(false);

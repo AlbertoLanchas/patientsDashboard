@@ -1,43 +1,60 @@
-import { useState } from "react";
-import { Filter, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { useMemo } from "react";
 
-import { AddPatientButton, PatientFormModal, PatientsContainer, PatientsTable, SearchBar, FilterPatients } from "../components";
-
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import { Gender, Patient } from "../../../interfaces";
-import { usePatientsMutations } from "../hooks/usePatientsMutations";
-import { usePatientsHandlers } from "../hooks/usePatientsHandlers";
-import { searchPatients } from "../utils/searchPatients";
+import ConfirmationModal from "#components/ConfirmationModal.tsx";
+import { Gender } from "#models/index.ts";
+import {
+  AddPatientButton,
+  FilterPatient,
+  PatientFormModal,
+  PatientsContainer,
+  PatientsTable
+} from "../components";
+import { usePatientContext } from "../context/PatientContext";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { usePatients } from "../hooks/usePatients";
+import { usePatientsHandlers } from "../hooks/usePatientsHandlers";
+import { usePatientsMutations } from "../hooks/usePatientsMutations";
 
 export function PatientsPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
-  const [optimisticPatientId, setOptimisticPatientId] = useState<string | null>(null);
 
-  const [gender, setGender] = useState<Gender>(Gender.All);
-  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
-  const [minAge, setMinAge] = useState<number | null>(null);
-  const [maxAge, setMaxAge] = useState<number | null>(null);
-
-  const { patientsQuery, page, nextPage, prevPage } = usePatients({
-    gender,
-    selectedConditions,
+  const {
+    setShowAddModal,
+    editingPatient,
+    setEditingPatient,
+    showDeleteModal,
+    setShowDeleteModal,
+    patientToDelete,
+    setPatientToDelete,
+    optimisticPatientId,
+    setOptimisticPatientId,
+    searchName,
+    conditionFilter,
     minAge,
-    maxAge,
-  });
+    genderFilter,
+  } = usePatientContext();
 
-  const { addPatientMutation, editPatientMutation, deleteMutation } = usePatientsMutations(setOptimisticPatientId);
+  const debouncedSearchName = useDebouncedValue(searchName, 500);
+  const debouncedConditionFilter = useDebouncedValue(conditionFilter, 500);
 
-  const { handleSubmit, handleOpenAddModal, handleEditPatient, errors, register } = usePatientsHandlers({
+  const filters = useMemo(() => ({
+    name: debouncedSearchName,
+    primaryCondition: debouncedConditionFilter,
+    minAge,
+    gender: genderFilter,
+  }), [debouncedSearchName, debouncedConditionFilter, minAge, genderFilter]);
+
+  const patientsQuery = usePatients(filters);
+
+  const { addPatientMutation, editPatientMutation, deleteMutation } =
+    usePatientsMutations(setOptimisticPatientId);
+
+  const {
+    handleOpenAddModal,
+    handleEditPatient,
+  } = usePatientsHandlers({
     setShowAddModal,
     setEditingPatient,
-    editingPatient,
-    addPatient: addPatientMutation.mutate,
-    editPatient: editPatientMutation.mutate,
   });
 
   const confirmDelete = () => {
@@ -47,16 +64,17 @@ export function PatientsPage() {
     setPatientToDelete(null);
   };
 
-  const patients = patientsQuery?.data?.data || []
-  const filteredPatients = searchPatients(patients, searchTerm);
-  const primaryConditions = [...new Set(patients.map(patient => patient.primaryCondition).flat())];
-
   if (patientsQuery.isLoading) {
     return (
       <PatientsContainer>
         <div className="flex items-center justify-center">
-          <Loader2 size={40} className="animate-spin text-blue-500 dark:text-blue-400" />
-          <span className="ml-2 text-blue-500 dark:text-blue-400 font-medium">Loading patients...</span>
+          <Loader2
+            size={40}
+            className="animate-spin text-blue-500 dark:text-blue-400"
+          />
+          <span className="ml-2 text-blue-500 dark:text-blue-400 font-medium">
+            Loading patients...
+          </span>
         </div>
       </PatientsContainer>
     );
@@ -65,50 +83,45 @@ export function PatientsPage() {
   if (patientsQuery.error) {
     return (
       <PatientsContainer>
-        <div className="flex items-center justify-center">Error loading patients: {patientsQuery.error.message}</div>
+        <div className="flex items-center justify-center">
+          Error loading patients: {patientsQuery.error.message}
+        </div>
       </PatientsContainer>
     );
   }
+
+  const patients = patientsQuery.data ?? [];
 
   return (
     <PatientsContainer>
       <AddPatientButton onAdd={handleOpenAddModal} />
       <div className="bg-white rounded-lg p-4 mb-6">
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        <FilterPatients
-          gender={gender}
-          setGender={setGender}
-          primaryConditions={primaryConditions}
-          selectedConditions={selectedConditions}
-          setSelectedConditions={setSelectedConditions}
-          minAge={minAge}
-          setMinAge={setMinAge}
-          maxAge={maxAge}
-          setMaxAge={setMaxAge}
-        />
-
+        <FilterPatient />
         <PatientsTable
-          patients={filteredPatients}
+          patients={patients}
           onEdit={handleEditPatient}
           optimisticId={optimisticPatientId}
           onDelete={(patient) => {
             setPatientToDelete(patient);
             setShowDeleteModal(true);
           }}
-          onGenderChange={setGender}
-          gender={gender}
-          page={page}
-          nextPage={nextPage}
-          prevPage={prevPage}
         />
       </div>
       <PatientFormModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        handleSubmit={handleSubmit}
-        errors={errors}
-        register={register}
-        isEdit={Boolean(editingPatient)}
+        onSubmit={(data) => {
+          if (editingPatient) {
+            editPatientMutation.mutate({ ...editingPatient, ...data });
+          } else {
+            addPatientMutation.mutate({
+              ...data,
+              id: crypto.randomUUID(),
+              gender: Gender.Unkwnon,
+            });
+          }
+
+          setShowAddModal(false);
+          setEditingPatient(null);
+        }}
       />
       <ConfirmationModal
         isOpen={showDeleteModal}
